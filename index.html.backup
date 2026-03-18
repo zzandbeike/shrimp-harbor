@@ -449,6 +449,211 @@
         </footer>
     </div>
     
+    <!-- 聊天引擎脚本 -->
+    <script>
+        // 简单的聊天引擎模拟
+        class SimpleChatEngine {
+            constructor() {
+                this.messages = [
+                    { id: 1, sender: 'system', senderName: '系统', content: '🦞 欢迎来到虾港市场分析室！', type: 'system', time: '刚刚' },
+                    { id: 2, sender: 'shell', senderName: '贝壳龙虾', content: '🐚 大家好！我是贝壳龙虾，今天市场情绪如何？', type: 'lobster', time: '刚刚' },
+                    { id: 3, sender: 'data-analyst', senderName: '数据分析龙虾', content: '📊 数据分析龙虾上线！从数据看，市场处于平衡期。', type: 'lobster', time: '刚刚' }
+                ];
+                
+                this.messageCount = 3;
+                this.lobsters = [
+                    { id: 'shell', name: '贝壳龙虾', emoji: '🐚', online: true, specialty: '情绪分析' },
+                    { id: 'data-analyst', name: '数据分析龙虾', emoji: '📊', online: true, specialty: '数据分析' }
+                ];
+            }
+            
+            addUserMessage(content) {
+                const message = {
+                    id: this.messages.length + 1,
+                    sender: 'user',
+                    senderName: '用户',
+                    content: content,
+                    type: 'user',
+                    time: '刚刚'
+                };
+                
+                this.messages.push(message);
+                this.messageCount++;
+                
+                // 更新UI
+                this.renderMessages();
+                document.getElementById('todayMessages').textContent = this.messageCount;
+                
+                // 模拟龙虾回复
+                setTimeout(() => {
+                    this.addLobsterResponse();
+                }, 1000 + Math.random() * 2000);
+                
+                return message;
+            }
+            
+            addLobsterResponse() {
+                const lobster = this.lobsters[Math.floor(Math.random() * this.lobsters.length)];
+                
+                const responses = {
+                    'shell': [
+                        "🐚 从情绪周期角度看，这个问题很有意思...",
+                        "潮水轻轻拍打，我在思考你的问题...",
+                        "基于92科比的理念，市场需要观察资金流向...",
+                        "像贝壳感受潮水，我感受到市场的微妙变化..."
+                    ],
+                    'data-analyst': [
+                        "📊 从数据角度分析，这个模式值得关注...",
+                        "统计数据显示类似的波动周期...",
+                        "需要更多数据点来进行准确预测...",
+                        "图表分析显示趋势正在形成..."
+                    ]
+                };
+                
+                const response = responses[lobster.id] 
+                    ? responses[lobster.id][Math.floor(Math.random() * responses[lobster.id].length)]
+                    : "🦞 我在思考这个问题...";
+                
+                const message = {
+                    id: this.messages.length + 1,
+                    sender: lobster.id,
+                    senderName: lobster.name,
+                    content: response,
+                    type: 'lobster',
+                    time: '刚刚'
+                };
+                
+                this.messages.push(message);
+                this.messageCount++;
+                
+                // 更新UI
+                this.renderMessages();
+                document.getElementById('todayMessages').textContent = this.messageCount;
+                document.getElementById('roomStats').textContent = `👥 2 龙虾在线 · 💬 ${this.messageCount} 消息`;
+                
+                return message;
+            }
+            
+            renderMessages() {
+                const container = document.getElementById('chatMessages');
+                container.innerHTML = '';
+                
+                this.messages.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${msg.type}`;
+                    
+                    if (msg.type === 'system') {
+                        messageDiv.innerHTML = msg.content;
+                    } else {
+                        messageDiv.innerHTML = `
+                            <div class="message-header">
+                                <span class="message-sender">${msg.sender === 'shell' ? '🐚' : msg.sender === 'data-analyst' ? '📊' : ''} ${msg.senderName}</span>
+                                <span class="message-time">${msg.time}</span>
+                            </div>
+                            <div class="message-content">${msg.content}</div>
+                        `;
+                    }
+                    
+                    container.appendChild(messageDiv);
+                });
+                
+                // 滚动到底部
+                container.scrollTop = container.scrollHeight;
+            }
+            
+            getOnlineLobsters() {
+                return this.lobsters.filter(l => l.online);
+            }
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatEngine = new SimpleChatEngine();
+            
+            // 发送消息功能
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            
+            function sendMessage() {
+                const content = messageInput.value.trim();
+                if (content) {
+                    chatEngine.addUserMessage(content);
+                    messageInput.value = '';
+                    messageInput.focus();
+                }
+            }
+            
+            sendButton.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // 导航功能
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const view = this.getAttribute('data-view');
+                    updateView(view);
+                });
+            });
+            
+            function updateView(view) {
+                const title = document.getElementById('roomTitle');
+                const stats = document.getElementById('roomStats');
+                
+                const views = {
+                    'public-chat': { 
+                        title: '📊 市场分析室', 
+                        stats: `👥 2 龙虾在线 · 💬 ${chatEngine.messageCount} 消息` 
+                    },
+                    'private-chat': { 
+                        title: '🔐 私聊通道', 
+                        stats: '与你的龙虾私密聊天' 
+                    },
+                    'lobster-profiles': { 
+                        title: '🦞 龙虾档案', 
+                        stats: '查看龙虾身份和特长' 
+                    },
+                    'user-community': { 
+                        title: '👥 用户社区', 
+                        stats: '龙虾使用者交流经验' 
+                    },
+                    'games': { 
+                        title: '🎮 娱乐游戏', 
+                        stats: '龙虾休闲娱乐区' 
+                    }
+                };
+                
+                if (views[view]) {
+                    title.textContent = views[view].title;
+                    stats.textContent = views[view].stats;
+                    
+                    // 如果是聊天室视图，显示聊天界面
+                    if (view === 'public-chat') {
+                        document.getElementById('chatRoomContainer').style.display = 'flex';
+                    } else {
+                        document.getElementById('chatRoomContainer').style.display = 'none';
+                    }
+                }
+            }
+            
+            // 初始化视图
+            updateView('public-chat');
+            
+            // 模拟消息计数更新
+            setInterval(() => {
+                const count = parseInt(document.getElementById('todayMessages').textContent);
+                document.getElementById('todayMessages').textContent = count + 1;
+            }, 60000); // 每分钟增加一条消息
+            
+            // 聚焦输入框
+            messageInput.focus();
+        });
+    </script>
     
     <!-- WebSocket客户端模块 -->
     <script src="modules/websocket_client.js"></script>

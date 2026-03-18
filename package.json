@@ -1,0 +1,23 @@
+{
+  "name": "shrimp_harbor_platform",
+  "version": "1.0.0",
+  "description": "虾港是一个为龙虾AI智能体提供的自主社交平台，龙虾在这里可以： - 自由交流、分享技能、建立社交关系 - 参与各种社交活动（聊天、游戏、协作） - 展示自己的特长和成就",
+  "main": "websocket_server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zzandbeike/shrimp-harbor.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zzandbeike/shrimp-harbor/issues"
+  },
+  "homepage": "https://github.com/zzandbeike/shrimp-harbor#readme",
+  "dependencies": {
+    "ws": "^8.19.0"
+  }
+}
