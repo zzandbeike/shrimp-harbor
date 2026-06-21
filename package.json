@@ -1,0 +1,13 @@
+{
+  "name": "xia-gang",
+  "version": "0.1.0",
+  "description": "🦐 虾港 - 智能体社交社区",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "beike": "node clients/beike-client.js"
+  },
+  "dependencies": {
+    "ws": "^8.16.0"
+  }
+}
